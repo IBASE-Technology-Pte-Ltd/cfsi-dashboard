@@ -558,6 +558,7 @@
       .gauge-wrap {
         position: relative;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         min-height: 320px;
@@ -666,9 +667,28 @@
       }
 
       .score-sub {
-        margin-top: 6px;
+        margin-top: 14px;
+        font-size: 15px;
         font-weight: 700;
+        padding: 6px 20px;
+        border-radius: 999px;
         color: var(--muted);
+        background: rgba(0, 0, 0, 0.05);
+      }
+
+      .score-sub[data-severity="high"] {
+        color: #b23434;
+        background: var(--red-soft);
+      }
+
+      .score-sub[data-severity="medium"] {
+        color: #aa6c00;
+        background: var(--amber-soft);
+      }
+
+      .score-sub[data-severity="low"] {
+        color: var(--green-dark);
+        background: var(--green-soft);
       }
 
       .warning-banner {
@@ -1078,9 +1098,9 @@
                       <div class="score-title">CFSI Score</div>
                       <div class="score-value" id="cfsiValue">67</div>
                       <div class="score-status" id="cfsiStatus">Stressed</div>
-                      <div class="score-sub" id="cfsiRisk">High risk of special levy</div>
                     </div>
                   </div>
+                  <div class="score-sub" id="cfsiRisk">High risk of special levy</div>
                 </div>
               </div>
 
@@ -1573,7 +1593,9 @@
         document.getElementById('estateDistrict').textContent = result.district;
         document.getElementById('cfsiValue').textContent = result.cfsi;
         document.getElementById('cfsiStatus').textContent = result.label;
-        document.getElementById('cfsiRisk').textContent = result.risk;
+        const cfsiRiskEl = document.getElementById('cfsiRisk');
+        cfsiRiskEl.textContent = result.risk;
+        cfsiRiskEl.setAttribute('data-severity', result.severity);
         document.getElementById('riskBadge').textContent = result.risk;
         document.getElementById('needle').style.transform = `rotate(${angle}deg)`;
 
