@@ -286,17 +286,35 @@
       .btn {
         border-radius: 14px;
         padding: 12px 16px;
+        font: inherit;
+        font-size: 14px;
         font-weight: 800;
         border: 1px solid transparent;
         cursor: pointer;
-        transition: transform 0.18s ease, box-shadow 0.18s ease;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
       }
 
       .btn:hover { transform: translateY(-1px); }
+      .btn:active { transform: translateY(1px); }
+      .btn:focus-visible {
+        outline: 2px solid rgba(247, 87, 87, 0.8);
+        outline-offset: 2px;
+      }
+
       .btn-primary {
         color: white;
         background: linear-gradient(135deg, var(--coral-dark), var(--coral));
         box-shadow: 0 14px 24px rgba(247, 87, 87, 0.22);
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(135deg, #d63e3e, var(--coral-dark));
+        box-shadow: 0 16px 28px rgba(247, 87, 87, 0.28);
+      }
+
+      .btn-primary:active {
+        background: linear-gradient(135deg, #c93636, #d63e3e);
+        box-shadow: 0 6px 14px rgba(247, 87, 87, 0.18);
       }
 
       .btn-secondary {
@@ -304,6 +322,24 @@
         background: rgba(255, 255, 255, 0.94);
         border-color: var(--border);
         box-shadow: var(--shadow-lg);
+      }
+
+      .btn-secondary:hover {
+        background: #ffffff;
+        border-color: rgba(247, 87, 87, 0.18);
+        color: var(--coral-dark);
+      }
+
+      .btn-secondary:active {
+        background: var(--bg-2);
+        box-shadow: inset 0 2px 4px rgba(33, 33, 33, 0.06);
+      }
+
+      .btn-secondary.active {
+        color: var(--coral);
+        background: linear-gradient(180deg, #fff8f8, #ffffff);
+        border-color: rgba(247, 87, 87, 0.22);
+        box-shadow: 0 10px 20px rgba(247, 87, 87, 0.12);
       }
 
       .grid-top,
@@ -1243,7 +1279,8 @@
       };
 
       const state = {
-        image: sampleEstates.alpha.image
+        image: sampleEstates.alpha.image,
+        activeEstate: 'alpha'
       };
 
       const formatMoney = (value) => new Intl.NumberFormat('en-SG', {
@@ -1472,6 +1509,15 @@
         };
       }
 
+      function setActiveEstate(id) {
+        state.activeEstate = id;
+        document.querySelectorAll('.estate-tab').forEach((tab) => {
+          tab.classList.toggle('active', tab.dataset.estateId === id);
+        });
+        document.getElementById('loadAlphaBtn').classList.toggle('active', id === 'alpha');
+        document.getElementById('loadVistaBtn').classList.toggle('active', id === 'vista');
+      }
+
       function renderEstateSwitcher() {
         const wrap = document.getElementById('estateSwitcher');
         wrap.innerHTML = '';
@@ -1480,12 +1526,13 @@
           { id: 'vista', title: 'Example B' },
           { id: 'custom', title: 'Live Inputs' }
         ].forEach((item) => {
-          const btn = el(`<button class="estate-tab">${item.title}</button>`);
-          if (item.id === 'custom') btn.classList.add('active');
+          const btn = el(`<button class="estate-tab" data-estate-id="${item.id}">${item.title}</button>`);
+          if (item.id === state.activeEstate) btn.classList.add('active');
           btn.addEventListener('click', () => {
             if (item.id === 'alpha' || item.id === 'vista') {
               setInputs(sampleEstates[item.id]);
             }
+            setActiveEstate(item.id);
             runCalculation();
           });
           wrap.appendChild(btn);
@@ -1562,14 +1609,15 @@
         renderDashboard(result);
       }
 
-      document.getElementById('calculateBtn').addEventListener('click', runCalculation);
-      document.getElementById('syncBtn').addEventListener('click', runCalculation);
-      document.getElementById('loadAlphaBtn').addEventListener('click', () => { setInputs(sampleEstates.alpha); runCalculation(); });
-      document.getElementById('loadVistaBtn').addEventListener('click', () => { setInputs(sampleEstates.vista); runCalculation(); });
+      document.getElementById('calculateBtn').addEventListener('click', () => { setActiveEstate('custom'); runCalculation(); });
+      document.getElementById('syncBtn').addEventListener('click', () => { setActiveEstate('custom'); runCalculation(); });
+      document.getElementById('loadAlphaBtn').addEventListener('click', () => { setInputs(sampleEstates.alpha); setActiveEstate('alpha'); runCalculation(); });
+      document.getElementById('loadVistaBtn').addEventListener('click', () => { setInputs(sampleEstates.vista); setActiveEstate('vista'); runCalculation(); });
       document.getElementById('exportBtn').addEventListener('click', () => window.print());
 
       setInputs(sampleEstates.alpha);
       renderEstateSwitcher();
+      setActiveEstate('alpha');
       runCalculation();
     </script>
   </body>
