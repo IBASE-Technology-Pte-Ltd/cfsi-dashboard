@@ -130,20 +130,27 @@
       }
 
       .brandmark {
-        width: 44px;
-        height: 44px;
-        border-radius: 14px;
-        background: rgba(91, 97, 112, 0.96);
-        display: grid;
-        place-items: center;
-        box-shadow: 0 12px 24px rgba(33, 33, 33, 0.14);
+        width: auto;
+        height: 40px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2px 8px;
+        box-shadow: 0 6px 14px rgba(33, 33, 33, 0.12);
+        overflow: hidden;
+      }
+
+      .brandmark-image {
+        width: auto;
+        height: 100%;
+        max-width: 170px;
+        object-fit: contain;
       }
 
       .brandmark-shape {
-        width: 24px;
-        height: 24px;
-        background: linear-gradient(180deg, var(--sand) 0%, var(--coral) 100%);
-        clip-path: polygon(50% 0%, 92% 24%, 92% 76%, 50% 100%, 8% 76%, 8% 24%);
+        display: none;
       }
 
       .brandname {
@@ -237,6 +244,10 @@
         font-weight: 900;
         letter-spacing: -0.03em;
       }
+
+      .hero-risk.low { color: #1f9b6a; }
+      .hero-risk.medium { color: #d59c24; }
+      .hero-risk.high { color: #d63e3e; }
 
       .content { padding: 24px; }
 
@@ -1044,8 +1055,7 @@
           <div class="hero-top">
             <div>
               <div class="brandline">
-                <div class="brandmark"><div class="brandmark-shape"></div></div>
-                <div class="brandname">Qornerstone</div>
+                <div class="brandmark"><img src="https://static.wixstatic.com/media/6b2781_ec5e2d7df8814b5291d35088e253389d~mv2.png/v1/fill/w_370,h_80,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/6b2781_ec5e2d7df8814b5291d35088e253389d~mv2.png" alt="Qornerstone logo" class="brandmark-image" /></div>
               </div>
               <div class="eyebrow">AI Financial Intelligence</div>
               <h1>Condo Financial Stress Index (CFSI)</h1>
@@ -1620,7 +1630,9 @@
         document.getElementById('heroEstateName').textContent = result.estateName;
         document.getElementById('heroCfsi').textContent = result.cfsi;
         document.getElementById('heroFund').textContent = formatCompactMoney(result.sinkingFund);
-        document.getElementById('heroRisk').textContent = result.label;
+        const heroRiskEl = document.getElementById('heroRisk');
+        heroRiskEl.textContent = result.label;
+        heroRiskEl.className = `hero-risk ${result.severity}`;
         document.getElementById('executiveHeadline').textContent = result.executiveHeadline;
         document.getElementById('executiveCopy').textContent = result.executiveCopy;
 
