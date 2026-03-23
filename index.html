@@ -402,6 +402,28 @@
       .grid-bottom { margin-top: 16px; grid-template-columns: 1fr 2fr; }
       .grid-last { margin-top: 16px; grid-template-columns: 2fr 1fr; }
 
+      #panel-settings .grid-two {
+        grid-template-columns: 1.45fr 0.95fr;
+        gap: 24px;
+        align-items: start;
+      }
+
+      #panel-settings .card-body {
+        padding: 24px 28px 28px;
+      }
+
+      #panel-settings input:not(.range-input),
+      #panel-settings textarea,
+      #panel-settings select {
+        min-height: 58px;
+        font-size: 15px;
+        border-radius: 16px;
+      }
+
+      #panel-settings textarea {
+        min-height: 118px;
+      }
+
       .card {
         position: relative;
         overflow: hidden;
@@ -484,12 +506,12 @@
       .input-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 14px;
+        gap: 20px 18px;
       }
 
       .field {
         display: grid;
-        gap: 8px;
+        gap: 10px;
       }
 
       .field.span-2 { grid-column: span 2; }
@@ -500,6 +522,7 @@
         color: var(--navy);
         letter-spacing: 0.08em;
         text-transform: uppercase;
+        margin-bottom: 2px;
       }
 
       input,
@@ -508,7 +531,7 @@
         width: 100%;
         border: 1px solid var(--border);
         border-radius: 14px;
-        padding: 13px 14px;
+        padding: 15px 16px;
         font: inherit;
         color: var(--text);
         background: rgba(255,255,255,0.95);
@@ -531,6 +554,45 @@
       .helper {
         font-size: 12px;
         color: var(--muted);
+      }
+
+      .slider-field {
+        display: grid;
+        gap: 12px;
+      }
+
+      .slider-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .slider-value {
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.04em;
+        color: var(--navy);
+        background: #f5f7fb;
+        border: 1px solid rgba(33, 33, 33, 0.06);
+        border-radius: 999px;
+        padding: 6px 10px;
+        white-space: nowrap;
+      }
+
+      .range-input {
+        padding: 0;
+        height: auto;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        accent-color: var(--coral);
+        cursor: pointer;
+        margin-top: 2px;
+      }
+
+      .range-input:focus {
+        box-shadow: none;
       }
 
       .estate-card { min-height: 320px; }
@@ -1247,15 +1309,33 @@
                     </div>
                     <div class="field">
                       <label for="sinkingFundInput">Sinking Fund Balance (SGD)</label>
-                      <input id="sinkingFundInput" type="number" min="0" step="1000" value="1150000" />
+                      <div class="slider-field">
+                        <div class="slider-top">
+                          <input id="sinkingFundInput" type="number" min="0" step="1000" value="1150000" />
+                          <div class="slider-value" id="sinkingFundValue">SGD 1.15M</div>
+                        </div>
+                        <input class="range-input" id="sinkingFundRange" type="range" min="0" max="5000000" step="10000" value="1150000" data-target="sinkingFundInput" data-output="sinkingFundValue" />
+                      </div>
                     </div>
                     <div class="field">
                       <label for="capexInput">10-Year Capex Need (SGD)</label>
-                      <input id="capexInput" type="number" min="0" step="1000" value="3800000" />
+                      <div class="slider-field">
+                        <div class="slider-top">
+                          <input id="capexInput" type="number" min="0" step="1000" value="3800000" />
+                          <div class="slider-value" id="capexValue">SGD 3.80M</div>
+                        </div>
+                        <input class="range-input" id="capexRange" type="range" min="0" max="10000000" step="10000" value="3800000" data-target="capexInput" data-output="capexValue" />
+                      </div>
                     </div>
                     <div class="field">
                       <label for="annualContributionInput">Annual Contribution (SGD)</label>
-                      <input id="annualContributionInput" type="number" min="0" step="1000" value="160000" />
+                      <div class="slider-field">
+                        <div class="slider-top">
+                          <input id="annualContributionInput" type="number" min="0" step="1000" value="160000" />
+                          <div class="slider-value" id="annualContributionValue">SGD 160K</div>
+                        </div>
+                        <input class="range-input" id="annualContributionRange" type="range" min="0" max="1000000" step="5000" value="160000" data-target="annualContributionInput" data-output="annualContributionValue" />
+                      </div>
                     </div>
                     <div class="field">
                       <label for="arrearsInput">Annual Arrears (%)</label>
@@ -1369,6 +1449,44 @@
         return formatMoney(n);
       };
 
+      const ensureSliderCapacity = (rangeEl, value) => {
+        const currentMax = Number(rangeEl.max || 0);
+        const currentStep = Number(rangeEl.step || 1000);
+        if (value <= currentMax) return;
+        const nextMax = Math.ceil(value / currentStep) * currentStep;
+        rangeEl.max = String(nextMax);
+      };
+
+      const syncCurrencySlider = (targetId) => {
+        const inputEl = document.getElementById(targetId);
+        const rangeEl = document.querySelector(`.range-input[data-target="${targetId}"]`);
+        if (!inputEl || !rangeEl) return;
+        const outputEl = document.getElementById(rangeEl.dataset.output);
+        const value = Math.max(0, Number(inputEl.value || 0));
+        ensureSliderCapacity(rangeEl, value);
+        inputEl.value = String(value);
+        rangeEl.value = String(value);
+        if (outputEl) outputEl.textContent = formatCompactMoney(value);
+      };
+
+      const bindCurrencySliders = () => {
+        document.querySelectorAll('.range-input[data-target]').forEach((rangeEl) => {
+          const inputEl = document.getElementById(rangeEl.dataset.target);
+          if (!inputEl) return;
+
+          rangeEl.addEventListener('input', () => {
+            inputEl.value = rangeEl.value;
+            syncCurrencySlider(inputEl.id);
+          });
+
+          inputEl.addEventListener('input', () => {
+            syncCurrencySlider(inputEl.id);
+          });
+
+          syncCurrencySlider(inputEl.id);
+        });
+      };
+
       const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
       const el = (html) => {
         const div = document.createElement('div');
@@ -1441,6 +1559,7 @@
         document.getElementById('failedMajorWorksInput').value = data.failedMajorWorks;
         document.getElementById('nextCapexInput').value = data.nextCapex;
         state.image = data.image;
+        ['sinkingFundInput', 'capexInput', 'annualContributionInput'].forEach(syncCurrencySlider);
       }
 
       function getFormData() {
@@ -1705,6 +1824,7 @@
       document.getElementById('openSettingsBtn').addEventListener('click', () => switchTab('settings'));
       document.getElementById('exportBtn').addEventListener('click', () => window.print());
 
+      bindCurrencySliders();
       setInputs(sampleEstates.alpha);
       renderEstateSwitcher();
       setActiveEstate('alpha');
