@@ -602,7 +602,7 @@
       .needle {
         position: absolute;
         left: 50%;
-        bottom: 9px;
+        bottom: 3px;
         width: 112px;
         height: 6px;
         border-radius: 999px;
@@ -1585,7 +1585,7 @@
       }
 
       function renderDashboard(result) {
-        const angle = -90 + (result.cfsi / 100) * 180;
+        const angle = -180 + (result.cfsi / 100) * 180;
         document.getElementById('estateImage').src = state.image;
         document.getElementById('estateImage').alt = result.estateName;
         document.getElementById('estateType').textContent = result.estateType;
