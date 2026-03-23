@@ -110,6 +110,14 @@
         background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 68%);
       }
 
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.0) 38%, rgba(255, 255, 255, 0.08));
+      }
+
       .hero-top,
       .hero-stats,
       .content { position: relative; z-index: 1; }
@@ -220,34 +228,99 @@
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 12px;
+        padding: 10px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.28);
       }
 
       .hero-stat {
         padding: 14px 16px;
         border-radius: 18px;
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.16));
+        border: 1px solid rgba(255, 255, 255, 0.34);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 10px 20px rgba(247, 87, 87, 0.12);
         backdrop-filter: blur(12px);
       }
 
       .hero-stat-label {
-        font-size: 12px;
+        font-size: 11px;
         text-transform: uppercase;
-        letter-spacing: 0.12em;
-        font-weight: 800;
-        color: rgba(255, 255, 255, 0.82);
+        letter-spacing: 0.13em;
+        font-weight: 900;
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 0 1px 1px rgba(113, 41, 41, 0.22);
       }
 
       .hero-stat-value {
         margin-top: 8px;
-        font-size: 24px;
+        font-size: 26px;
         font-weight: 900;
         letter-spacing: -0.03em;
+        color: #ffffff;
+        text-shadow: 0 2px 6px rgba(122, 44, 44, 0.34);
       }
 
-      .hero-risk.low { color: #1f9b6a; }
-      .hero-risk.medium { color: #d59c24; }
-      .hero-risk.high { color: #d63e3e; }
+      .hero-stat.risk-card {
+        border-width: 2px;
+      }
+
+      .hero-stat.risk-card.low {
+        background: linear-gradient(180deg, rgba(225, 255, 241, 0.90), rgba(205, 248, 229, 0.78));
+        border-color: rgba(31, 155, 106, 0.42);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 12px 22px rgba(31, 155, 106, 0.14);
+      }
+
+      .hero-stat.risk-card.medium {
+        background: linear-gradient(180deg, rgba(255, 245, 218, 0.92), rgba(255, 234, 179, 0.82));
+        border-color: rgba(170, 108, 0, 0.38);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.52), 0 12px 22px rgba(170, 108, 0, 0.15);
+      }
+
+      .hero-stat.risk-card.high {
+        background: linear-gradient(180deg, rgba(255, 236, 231, 0.93), rgba(255, 214, 203, 0.82));
+        border-color: rgba(178, 52, 52, 0.40);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.54), 0 12px 22px rgba(178, 52, 52, 0.14);
+      }
+
+      .hero-risk {
+        font-size: 24px;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        text-shadow: none;
+      }
+
+      .hero-risk.low { color: #146345; }
+      .hero-risk.medium { color: #8f5b00; }
+      .hero-risk.high { color: #9f3333; }
+
+      .hero-cfsi.low {
+        color: #167b56;
+        text-shadow: 0 2px 6px rgba(22, 123, 86, 0.28);
+      }
+
+      .hero-cfsi.medium {
+        color: #9c6400;
+        text-shadow: 0 2px 6px rgba(156, 100, 0, 0.28);
+      }
+
+      .hero-cfsi.high {
+        color: #b23434;
+        text-shadow: 0 2px 6px rgba(178, 52, 52, 0.30);
+      }
+
+      .hero-stat.fund-card {
+        background: linear-gradient(180deg, rgba(255, 246, 227, 0.90), rgba(255, 234, 198, 0.78));
+        border-color: rgba(247, 87, 87, 0.30);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.56), 0 10px 18px rgba(247, 87, 87, 0.12);
+      }
+
+      .hero-fund {
+        font-size: 24px;
+        letter-spacing: -0.02em;
+        color: #5b6170;
+        text-shadow: 0 1px 2px rgba(247, 87, 87, 0.16);
+      }
 
       .content { padding: 24px; }
 
@@ -1142,11 +1215,11 @@
               <div class="hero-stat-label">Current CFSI</div>
               <div class="hero-stat-value" id="heroCfsi">67</div>
             </div>
-            <div class="hero-stat">
+            <div class="hero-stat fund-card" id="heroFundCard">
               <div class="hero-stat-label">Reserve Balance</div>
-              <div class="hero-stat-value" id="heroFund">SGD 1.15M</div>
+              <div class="hero-stat-value hero-fund" id="heroFund">SGD 1.15M</div>
             </div>
-            <div class="hero-stat">
+            <div class="hero-stat" id="heroRiskCard">
               <div class="hero-stat-label">Risk Signal</div>
               <div class="hero-stat-value" id="heroRisk">Stressed</div>
             </div>
@@ -1195,8 +1268,11 @@
               </div>
 
               <div class="card">
-                <div class="card-header">Calculated Result</div>
-                <div class="card-body" id="keyStats"></div>
+                <div class="card-header">Executive Readout</div>
+                <div class="card-body">
+                  <strong id="executiveHeadline">Funding stress remains elevated.</strong>
+                  <div id="executiveCopy"></div>
+                </div>
               </div>
             </div>
 
@@ -1225,12 +1301,9 @@
                 </div>
               </div>
 
-              <div class="card insight-banner">
-                <div class="card-header">Executive Readout</div>
-                <div class="card-body">
-                  <strong id="executiveHeadline">Funding stress remains elevated.</strong>
-                  <div id="executiveCopy"></div>
-                </div>
+              <div class="card">
+                <div class="card-header">Calculated Result</div>
+                <div class="card-body" id="keyStats"></div>
               </div>
             </div>
 
@@ -1747,11 +1820,17 @@
         document.getElementById('needle').style.transform = `rotate(${angle}deg)`;
 
         document.getElementById('heroEstateName').textContent = result.estateName;
-        document.getElementById('heroCfsi').textContent = result.cfsi;
-        document.getElementById('heroFund').textContent = formatCompactMoney(result.sinkingFund);
+        const heroCfsiEl = document.getElementById('heroCfsi');
+        heroCfsiEl.textContent = result.cfsi;
+        heroCfsiEl.className = `hero-stat-value hero-cfsi ${result.severity}`;
+        const heroFundEl = document.getElementById('heroFund');
+        heroFundEl.textContent = formatCompactMoney(result.sinkingFund);
+        heroFundEl.className = 'hero-stat-value hero-fund';
         const heroRiskEl = document.getElementById('heroRisk');
+        const heroRiskCardEl = document.getElementById('heroRiskCard');
         heroRiskEl.textContent = result.label;
-        heroRiskEl.className = `hero-risk ${result.severity}`;
+        heroRiskEl.className = `hero-stat-value hero-risk ${result.severity}`;
+        heroRiskCardEl.className = `hero-stat risk-card ${result.severity}`;
         document.getElementById('executiveHeadline').textContent = result.executiveHeadline;
         document.getElementById('executiveCopy').textContent = result.executiveCopy;
 
