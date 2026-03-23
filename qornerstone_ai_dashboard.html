@@ -240,6 +240,40 @@
 
       .content { padding: 24px; }
 
+      .page-tabs {
+        display: inline-flex;
+        gap: 6px;
+        padding: 5px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #ffffff, #faf8f7);
+        border: 1px solid var(--border);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.84);
+        margin-bottom: 20px;
+      }
+
+      .page-tab {
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        font-weight: 800;
+        font-size: 14px;
+        padding: 10px 24px;
+        border-radius: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .page-tab:hover { color: var(--coral); }
+
+      .page-tab.active {
+        color: var(--coral);
+        background: linear-gradient(180deg, #fff8f8, #ffffff);
+        box-shadow: 0 10px 20px rgba(247, 87, 87, 0.12);
+      }
+
+      .tab-panel[hidden] { display: none; }
+
       .toolbar {
         display: flex;
         justify-content: space-between;
@@ -1010,214 +1044,223 @@
         </section>
 
         <section class="content">
-          <div class="grid-two">
-            <div class="card">
-              <div class="card-header">Input Key Stats</div>
+          <div class="page-tabs">
+            <button class="page-tab active" data-panel="dashboard">Dashboard</button>
+            <button class="page-tab" data-panel="settings">⚙ Settings</button>
+          </div>
+
+          <div class="tab-panel" id="panel-dashboard">
+            <div class="toolbar">
+              <div class="estate-switcher" id="estateSwitcher"></div>
+              <div class="action-row">
+                <button class="btn btn-secondary" id="openSettingsBtn">⚙ Settings</button>
+                <button class="btn btn-secondary" id="exportBtn">Export Board Summary</button>
+              </div>
+            </div>
+
+            <div class="grid-top">
+              <div class="card estate-card">
+                <img id="estateImage" alt="Estate" src="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1200&q=80" />
+                <div class="estate-overlay">
+                  <div class="estate-type" id="estateType"></div>
+                  <h2 class="estate-name" id="estateName"></h2>
+                  <div class="estate-location" id="estateDistrict"></div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-body gauge-wrap">
+                  <div class="gauge">
+                    <div class="gauge-arc"></div>
+                    <div class="gauge-cutout"></div>
+                    <div class="needle" id="needle"></div>
+                    <div class="gauge-labels">
+                      <div class="score-title">CFSI Score</div>
+                      <div class="score-value" id="cfsiValue">67</div>
+                      <div class="score-status" id="cfsiStatus">Stressed</div>
+                      <div class="score-sub" id="cfsiRisk">High risk of special levy</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">Calculated Result</div>
+                <div class="card-body" id="keyStats"></div>
+              </div>
+            </div>
+
+            <div class="warning-banner high" id="warningBanner"></div>
+
+            <div class="grid-mid">
+              <div class="card">
+                <div class="card-header blue">Reserve &amp; Capex Outlook</div>
+                <div class="card-body" id="reserveStats"></div>
+              </div>
+              <div class="card">
+                <div class="card-header blue">Asset &amp; Maintenance Status</div>
+                <div class="card-body" id="assetStats"></div>
+              </div>
+              <div class="card">
+                <div class="card-header blue">Risk History</div>
+                <div class="card-body" id="riskHistory"></div>
+              </div>
+            </div>
+
+            <div class="grid-bottom">
+              <div class="card">
+                <div class="card-header">AI Health Signals</div>
+                <div class="card-body">
+                  <div class="health-bars" id="healthBars"></div>
+                </div>
+              </div>
+
+              <div class="card insight-banner">
+                <div class="card-header">Executive Readout</div>
+                <div class="card-body">
+                  <strong id="executiveHeadline">Funding stress remains elevated.</strong>
+                  <div id="executiveCopy"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top:16px;">
+              <div class="card-header">Key Insights</div>
               <div class="card-body">
-                <div class="input-grid">
-                  <div class="field span-2">
-                    <label for="estateNameInput">Estate Name</label>
-                    <input id="estateNameInput" type="text" value="Estate Alpha" />
+                <div class="signal-grid" id="signalGrid"></div>
+              </div>
+            </div>
+
+            <div class="grid-last">
+              <div class="card">
+                <div class="card-body">
+                  <div class="summary-head">
+                    <div class="card-header" style="padding:0;">AI Operator Summary</div>
+                    <div class="summary-badge" id="riskBadge"></div>
                   </div>
-                  <div class="field">
-                    <label for="estateTypeInput">Estate Type</label>
-                    <select id="estateTypeInput">
-                      <option>Condo</option>
-                      <option>Mixed-use</option>
-                      <option>Commercial</option>
-                      <option>Strata</option>
-                    </select>
-                  </div>
-                  <div class="field">
-                    <label for="districtInput">Location / District</label>
-                    <input id="districtInput" type="text" value="Singapore · District 9" />
-                  </div>
-                  <div class="field">
-                    <label for="ageInput">Estate Age (years)</label>
-                    <input id="ageInput" type="number" min="0" step="1" value="28" />
-                  </div>
-                  <div class="field">
-                    <label for="liftAgeInput">Lift Age (years)</label>
-                    <input id="liftAgeInput" type="number" min="0" step="1" value="21" />
-                  </div>
-                  <div class="field">
-                    <label for="lastRepaintingInput">Last Repainting (years ago)</label>
-                    <input id="lastRepaintingInput" type="number" min="0" step="1" value="8" />
-                  </div>
-                  <div class="field">
-                    <label for="sinkingFundInput">Sinking Fund Balance (SGD)</label>
-                    <input id="sinkingFundInput" type="number" min="0" step="1000" value="1150000" />
-                  </div>
-                  <div class="field">
-                    <label for="capexInput">10-Year Capex Need (SGD)</label>
-                    <input id="capexInput" type="number" min="0" step="1000" value="3800000" />
-                  </div>
-                  <div class="field">
-                    <label for="annualContributionInput">Annual Contribution (SGD)</label>
-                    <input id="annualContributionInput" type="number" min="0" step="1000" value="160000" />
-                  </div>
-                  <div class="field">
-                    <label for="arrearsInput">Annual Arrears (%)</label>
-                    <input id="arrearsInput" type="number" min="0" max="100" step="0.1" value="12" />
-                  </div>
-                  <div class="field">
-                    <label for="specialLeviesInput">Special Levies (last 5 years)</label>
-                    <input id="specialLeviesInput" type="number" min="0" step="1" value="2" />
-                  </div>
-                  <div class="field">
-                    <label for="failedMajorWorksInput">Postponed Major Works</label>
-                    <input id="failedMajorWorksInput" type="number" min="0" step="1" value="2" />
-                  </div>
-                  <div class="field span-2">
-                    <label for="nextCapexInput">Next 3 Capex Items</label>
-                    <textarea id="nextCapexInput">Lift Overhaul, Repainting, Waterproofing</textarea>
-                    <div class="helper">Separate items with commas.</div>
-                  </div>
+                  <div class="insight-grid" id="insights" style="margin-top:14px;"></div>
                 </div>
-                <div class="action-row" style="margin-top:16px;">
-                  <button class="btn btn-primary" id="calculateBtn">Calculate Risk</button>
-                  <button class="btn btn-secondary" id="loadAlphaBtn">Load Example A</button>
-                  <button class="btn btn-secondary" id="loadVistaBtn">Load Example B</button>
+              </div>
+
+              <div class="card">
+                <div class="card-header">Risk Logic</div>
+                <div class="card-body">
+                  <div class="model-list">
+                    <div class="model-item"><strong>Stable</strong>Score below 40. Adequate reserves, controlled arrears, and manageable asset age.</div>
+                    <div class="model-item"><strong>Watchlist</strong>Score 40 to 64. Emerging stress signals. Intervention recommended before capex cycle tightens.</div>
+                    <div class="model-item"><strong>Stressed</strong>Score 65+. High likelihood of funding pressure, delayed works, or special levy risk.</div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="card">
-              <div class="card-header">Scoring Formula</div>
+            <div class="card" style="margin-top:16px;">
+              <div class="card-header">Recommended Actions</div>
               <div class="card-body">
-                <div class="muted-copy">
-                  The web app computes a weighted CFSI score from reserve adequacy, arrears pressure, ageing assets,
-                  repainting delay, special levy history, and postponed major works. Higher score means higher financial stress.
-                </div>
-                <div class="formula-box">
-                  <strong style="display:block;color:var(--navy);font-size:16px;">CFSI Formula</strong>
-                  <div style="margin-top:8px;font-weight:700;color:#5e687a;line-height:1.7;">
-                    CFSI = 35% Reserve Gap + 20% Arrears + 15% Lift Age + 10% Repainting Delay + 10% Special Levies + 10% Failed Works
+                <div class="action-list" id="actions"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="panel-settings" hidden>
+            <div class="grid-two">
+              <div class="card">
+                <div class="card-header">Input Key Stats</div>
+                <div class="card-body">
+                  <div class="input-grid">
+                    <div class="field span-2">
+                      <label for="estateNameInput">Estate Name</label>
+                      <input id="estateNameInput" type="text" value="Estate Alpha" />
+                    </div>
+                    <div class="field">
+                      <label for="estateTypeInput">Estate Type</label>
+                      <select id="estateTypeInput">
+                        <option>Condo</option>
+                        <option>Mixed-use</option>
+                        <option>Commercial</option>
+                        <option>Strata</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label for="districtInput">Location / District</label>
+                      <input id="districtInput" type="text" value="Singapore · District 9" />
+                    </div>
+                    <div class="field">
+                      <label for="ageInput">Estate Age (years)</label>
+                      <input id="ageInput" type="number" min="0" step="1" value="28" />
+                    </div>
+                    <div class="field">
+                      <label for="liftAgeInput">Lift Age (years)</label>
+                      <input id="liftAgeInput" type="number" min="0" step="1" value="21" />
+                    </div>
+                    <div class="field">
+                      <label for="lastRepaintingInput">Last Repainting (years ago)</label>
+                      <input id="lastRepaintingInput" type="number" min="0" step="1" value="8" />
+                    </div>
+                    <div class="field">
+                      <label for="sinkingFundInput">Sinking Fund Balance (SGD)</label>
+                      <input id="sinkingFundInput" type="number" min="0" step="1000" value="1150000" />
+                    </div>
+                    <div class="field">
+                      <label for="capexInput">10-Year Capex Need (SGD)</label>
+                      <input id="capexInput" type="number" min="0" step="1000" value="3800000" />
+                    </div>
+                    <div class="field">
+                      <label for="annualContributionInput">Annual Contribution (SGD)</label>
+                      <input id="annualContributionInput" type="number" min="0" step="1000" value="160000" />
+                    </div>
+                    <div class="field">
+                      <label for="arrearsInput">Annual Arrears (%)</label>
+                      <input id="arrearsInput" type="number" min="0" max="100" step="0.1" value="12" />
+                    </div>
+                    <div class="field">
+                      <label for="specialLeviesInput">Special Levies (last 5 years)</label>
+                      <input id="specialLeviesInput" type="number" min="0" step="1" value="2" />
+                    </div>
+                    <div class="field">
+                      <label for="failedMajorWorksInput">Postponed Major Works</label>
+                      <input id="failedMajorWorksInput" type="number" min="0" step="1" value="2" />
+                    </div>
+                    <div class="field span-2">
+                      <label for="nextCapexInput">Next 3 Capex Items</label>
+                      <textarea id="nextCapexInput">Lift Overhaul, Repainting, Waterproofing</textarea>
+                      <div class="helper">Separate items with commas.</div>
+                    </div>
                   </div>
-                  <div class="formula-grid">
-                    <div class="formula-pill"><strong>Reserve Gap</strong>Based on how much 10-year capex is not covered by current sinking fund.</div>
-                    <div class="formula-pill"><strong>Arrears</strong>Higher owner arrears increase liquidity and collection risk.</div>
-                    <div class="formula-pill"><strong>Lift Age</strong>Older lifts increase replacement risk and near-term capex pressure.</div>
-                    <div class="formula-pill"><strong>Repainting Delay</strong>Long delays indicate maintenance slippage and future repair cost escalation.</div>
-                    <div class="formula-pill"><strong>Special Levies</strong>Past levies are treated as evidence of prior reserve stress.</div>
-                    <div class="formula-pill"><strong>Failed Works</strong>Postponed projects indicate execution strain and deferred liabilities.</div>
-                  </div>
-                </div>
-                <div class="footer-note">
-                  Suggested thresholds: below 40 = Stable, 40 to 64 = Watchlist, 65 and above = Stressed. You can later tune the weights to match your internal model.
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="toolbar" style="margin-top:18px;">
-            <div class="estate-switcher" id="estateSwitcher"></div>
-            <div class="action-row">
-              <button class="btn btn-primary" id="syncBtn">Sync Inputs to Dashboard</button>
-              <button class="btn btn-secondary" id="exportBtn">Export Board Summary</button>
-            </div>
-          </div>
-
-          <div class="grid-top">
-            <div class="card estate-card">
-              <img id="estateImage" alt="Estate" src="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1200&q=80" />
-              <div class="estate-overlay">
-                <div class="estate-type" id="estateType"></div>
-                <h2 class="estate-name" id="estateName"></h2>
-                <div class="estate-location" id="estateDistrict"></div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-body gauge-wrap">
-                <div class="gauge">
-                  <div class="gauge-arc"></div>
-                  <div class="gauge-cutout"></div>
-                  <div class="needle" id="needle"></div>
-                  <div class="gauge-labels">
-                    <div class="score-title">CFSI Score</div>
-                    <div class="score-value" id="cfsiValue">67</div>
-                    <div class="score-status" id="cfsiStatus">Stressed</div>
-                    <div class="score-sub" id="cfsiRisk">High risk of special levy</div>
+                  <div class="action-row" style="margin-top:16px;">
+                    <button class="btn btn-primary" id="calculateBtn">Calculate Risk</button>
+                    <button class="btn btn-secondary" id="loadAlphaBtn">Load Example A</button>
+                    <button class="btn btn-secondary" id="loadVistaBtn">Load Example B</button>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div class="card">
-              <div class="card-header">Calculated Result</div>
-              <div class="card-body" id="keyStats"></div>
-            </div>
-          </div>
-
-          <div class="warning-banner high" id="warningBanner"></div>
-
-          <div class="grid-mid">
-            <div class="card">
-              <div class="card-header blue">Reserve &amp; Capex Outlook</div>
-              <div class="card-body" id="reserveStats"></div>
-            </div>
-            <div class="card">
-              <div class="card-header blue">Asset &amp; Maintenance Status</div>
-              <div class="card-body" id="assetStats"></div>
-            </div>
-            <div class="card">
-              <div class="card-header blue">Risk History</div>
-              <div class="card-body" id="riskHistory"></div>
-            </div>
-          </div>
-
-          <div class="grid-bottom">
-            <div class="card">
-              <div class="card-header">AI Health Signals</div>
-              <div class="card-body">
-                <div class="health-bars" id="healthBars"></div>
-              </div>
-            </div>
-
-            <div class="card insight-banner">
-              <div class="card-header">Executive Readout</div>
-              <div class="card-body">
-                <strong id="executiveHeadline">Funding stress remains elevated.</strong>
-                <div id="executiveCopy"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card" style="margin-top:16px;">
-            <div class="card-header">Key Insights</div>
-            <div class="card-body">
-              <div class="signal-grid" id="signalGrid"></div>
-            </div>
-          </div>
-
-          <div class="grid-last">
-            <div class="card">
-              <div class="card-body">
-                <div class="summary-head">
-                  <div class="card-header" style="padding:0;">AI Operator Summary</div>
-                  <div class="summary-badge" id="riskBadge"></div>
-                </div>
-                <div class="insight-grid" id="insights" style="margin-top:14px;"></div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header">Risk Logic</div>
-              <div class="card-body">
-                <div class="model-list">
-                  <div class="model-item"><strong>Stable</strong>Score below 40. Adequate reserves, controlled arrears, and manageable asset age.</div>
-                  <div class="model-item"><strong>Watchlist</strong>Score 40 to 64. Emerging stress signals. Intervention recommended before capex cycle tightens.</div>
-                  <div class="model-item"><strong>Stressed</strong>Score 65+. High likelihood of funding pressure, delayed works, or special levy risk.</div>
+              <div class="card">
+                <div class="card-header">Scoring Formula</div>
+                <div class="card-body">
+                  <div class="muted-copy">
+                    The web app computes a weighted CFSI score from reserve adequacy, arrears pressure, ageing assets,
+                    repainting delay, special levy history, and postponed major works. Higher score means higher financial stress.
+                  </div>
+                  <div class="formula-box">
+                    <strong style="display:block;color:var(--navy);font-size:16px;">CFSI Formula</strong>
+                    <div style="margin-top:8px;font-weight:700;color:#5e687a;line-height:1.7;">
+                      CFSI = 35% Reserve Gap + 20% Arrears + 15% Lift Age + 10% Repainting Delay + 10% Special Levies + 10% Failed Works
+                    </div>
+                    <div class="formula-grid">
+                      <div class="formula-pill"><strong>Reserve Gap</strong>Based on how much 10-year capex is not covered by current sinking fund.</div>
+                      <div class="formula-pill"><strong>Arrears</strong>Higher owner arrears increase liquidity and collection risk.</div>
+                      <div class="formula-pill"><strong>Lift Age</strong>Older lifts increase replacement risk and near-term capex pressure.</div>
+                      <div class="formula-pill"><strong>Repainting Delay</strong>Long delays indicate maintenance slippage and future repair cost escalation.</div>
+                      <div class="formula-pill"><strong>Special Levies</strong>Past levies are treated as evidence of prior reserve stress.</div>
+                      <div class="formula-pill"><strong>Failed Works</strong>Postponed projects indicate execution strain and deferred liabilities.</div>
+                    </div>
+                  </div>
+                  <div class="footer-note">
+                    Suggested thresholds: below 40 = Stable, 40 to 64 = Watchlist, 65 and above = Stressed. You can later tune the weights to match your internal model.
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div class="card" style="margin-top:16px;">
-            <div class="card-header">Recommended Actions</div>
-            <div class="card-body">
-              <div class="action-list" id="actions"></div>
             </div>
           </div>
         </section>
@@ -1591,10 +1634,23 @@
         renderDashboard(result);
       }
 
-      document.getElementById('calculateBtn').addEventListener('click', () => { setActiveEstate('custom'); runCalculation(); });
-      document.getElementById('syncBtn').addEventListener('click', () => { setActiveEstate('custom'); runCalculation(); });
-      document.getElementById('loadAlphaBtn').addEventListener('click', () => { setInputs(sampleEstates.alpha); setActiveEstate('alpha'); runCalculation(); });
-      document.getElementById('loadVistaBtn').addEventListener('click', () => { setInputs(sampleEstates.vista); setActiveEstate('vista'); runCalculation(); });
+      function switchTab(id) {
+        document.querySelectorAll('.page-tab').forEach((t) => {
+          t.classList.toggle('active', t.dataset.panel === id);
+        });
+        document.querySelectorAll('.tab-panel').forEach((p) => {
+          p.hidden = p.id !== `panel-${id}`;
+        });
+      }
+
+      document.querySelectorAll('.page-tab').forEach((t) => {
+        t.addEventListener('click', () => switchTab(t.dataset.panel));
+      });
+
+      document.getElementById('calculateBtn').addEventListener('click', () => { setActiveEstate('custom'); runCalculation(); switchTab('dashboard'); });
+      document.getElementById('loadAlphaBtn').addEventListener('click', () => { setInputs(sampleEstates.alpha); setActiveEstate('alpha'); runCalculation(); switchTab('dashboard'); });
+      document.getElementById('loadVistaBtn').addEventListener('click', () => { setInputs(sampleEstates.vista); setActiveEstate('vista'); runCalculation(); switchTab('dashboard'); });
+      document.getElementById('openSettingsBtn').addEventListener('click', () => switchTab('settings'));
       document.getElementById('exportBtn').addEventListener('click', () => window.print());
 
       setInputs(sampleEstates.alpha);
