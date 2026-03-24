@@ -1,1 +1,3 @@
 # cfsi-dashboard
+
+A single-page AI financial intelligence dashboard for computing the **Condo Financial Stress Index (CFSI)**. Enter your estate's key financial statistics — reserve fund balance, projected capital expenditure, arrears, lift age, repainting schedule, special levies, and failed major works — and the app automatically calculates a weighted CFSI score, assigns a risk signal (Low / Medium / High), and surfaces targeted warnings and recommended actions before reserve stress, major works delays, or special levy pressure become critical.
