@@ -36,7 +36,7 @@ You can modify the HTML files to:
 
 ## License
 
-<a>MIT</a>
+MIT
 
 ---
 
